@@ -8,9 +8,11 @@ public class Snake : MonoBehaviour
     private PlayerControls _playerControls;
     
     [SerializeField] private float force = 10;
-    [SerializeField] private float initialForce = 8;
-    [SerializeField] private float k = 5;
+    [SerializeField] private float initialForce = 1000;
+    [SerializeField] private float k = 100000;
     [SerializeField] private Rigidbody head;
+
+    private bool _isStartedMoving = false;
 
     private void Awake()
     {
@@ -31,6 +33,17 @@ public class Snake : MonoBehaviour
     private void FixedUpdate()
     {
         head.AddForce(GetForwardDirection() * force);
+
+        if (!_isStartedMoving)
+        {
+            head.AddForce(GetDampDirection() * initialForce);
+            _isStartedMoving = true;
+        }
+        else
+        {
+            var offset = -GetDampOffset();
+            head.AddForce(GetDampDirection() * (offset * k));
+        }
     }
 
     private void OnDisable()
@@ -47,5 +60,21 @@ public class Snake : MonoBehaviour
     {
         // push the snake forward, use USER INPUT later
         return Vector3.forward;
+    }
+
+    private Vector3 GetDampDirection()
+    {
+        var vector3 = GetForwardDirection();
+        var vector2 = Vector2.Perpendicular(new Vector2(vector3.x, vector3.z));
+
+        vector3.x = vector2.x;
+        vector3.z = vector2.y;
+
+        return vector3.normalized;
+    }
+
+    private float GetDampOffset()
+    {
+        return Vector3.Dot(head.position, GetDampDirection());
     }
 }
