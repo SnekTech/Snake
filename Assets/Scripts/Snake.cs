@@ -8,6 +8,7 @@ public class Snake : MonoBehaviour
     private PlayerControls _playerControls;
     
     [SerializeField] private Rigidbody head;
+    [SerializeField] private GameObject segmentPrefab;
     [SerializeField] private float maxSpeed = 10;
 
     private Vector3 _forwardDirection = Vector3.zero;
@@ -19,6 +20,7 @@ public class Snake : MonoBehaviour
 
     private float _x;
     private float _speed = 0;
+    private List<Rigidbody> _segments;
     
     private void Awake()
     {
@@ -51,8 +53,18 @@ public class Snake : MonoBehaviour
         _playerControls.Land.Move.canceled += _ =>
         {
             _forwardDirection = Vector3.zero;
-            _x = 0;
         };
+
+        _segments = new List<Rigidbody>();
+        var prev = head;
+        for (int i = 0; i < 10; i++)
+        {
+            var position = head.position + new Vector3(0, 0, -(i + 1) * 3);
+            var segment = Instantiate(segmentPrefab, position, Quaternion.identity);
+            // segment.GetComponent<SpringJoint>().connectedBody = prev;
+            // prev = segment.GetComponent<Rigidbody>();
+            _segments.Add(segment.GetComponent<Rigidbody>());
+        }
     }
     
     // Update is called once per frame
@@ -76,5 +88,18 @@ public class Snake : MonoBehaviour
         _accumulatedMovement = Vector3.zero;
         
         head.MovePosition(nextPosition);
+        
+        var prev = head;
+        foreach (var segment in _segments)
+        {
+            var prevPosition = prev.position;
+            var currentPosition = segment.position;
+            if ((prevPosition - currentPosition).sqrMagnitude > 4)
+            {
+                nextPosition = Vector3.Lerp(prevPosition, currentPosition, 0.9f);
+                segment.MovePosition(nextPosition);
+            }
+            prev = segment;
+        }
     }
 }

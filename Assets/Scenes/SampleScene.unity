@@ -432,9 +432,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 57753363}
+  segmentPrefab: {fileID: 4313345937156190527, guid: 40a4dce01d115d24781607ce86e6b47d,
+    type: 3}
   maxSpeed: 10
   amplitude: 0.05
-  frequency: 0.5
+  frequency: 0.3
   phase: 0
 --- !u!4 &1624648870
 Transform:
@@ -487,7 +489,7 @@ PrefabInstance:
     - target: {fileID: 5857768192996167515, guid: 79b3ac13539e3594fa60230b2bf1f5c5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.65
+      value: -9.058
       objectReference: {fileID: 0}
     - target: {fileID: 5857768192996167515, guid: 79b3ac13539e3594fa60230b2bf1f5c5,
         type: 3}
