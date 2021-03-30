@@ -7,13 +7,19 @@ public class Snake : MonoBehaviour
 {
     private PlayerControls _playerControls;
     
-    [SerializeField] private float force = 10;
-    [SerializeField] private float initialForce = 1000;
-    [SerializeField] private float k = 100000;
     [SerializeField] private Rigidbody head;
+    [SerializeField] private float maxSpeed = 10;
 
-    private bool _isStartedMoving = false;
+    private Vector3 _forwardDirection = Vector3.zero;
+    private Vector3 _accumulatedMovement = Vector3.zero;
 
+    [SerializeField] private float amplitude = 0.05f;
+    [SerializeField] private float frequency = 0.5f;
+    [SerializeField] private float phase = 0;
+
+    private float _x;
+    private float _speed = 0;
+    
     private void Awake()
     {
         _playerControls = new PlayerControls();
@@ -22,59 +28,53 @@ public class Snake : MonoBehaviour
     private void OnEnable()
     {
         _playerControls.Enable();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    private void FixedUpdate()
-    {
-        head.AddForce(GetForwardDirection() * force);
-
-        if (!_isStartedMoving)
-        {
-            head.AddForce(GetDampDirection() * initialForce);
-            _isStartedMoving = true;
-        }
-        else
-        {
-            var offset = -GetDampOffset();
-            head.AddForce(GetDampDirection() * (offset * k));
-        }
+        _x = 0;
     }
 
     private void OnDisable()
     {
         _playerControls.Disable();
     }
-
-    private bool IsMoving()
+    
+    // Start is called before the first frame update
+    void Start()
     {
-        return head.velocity != Vector3.zero;
+        _playerControls.Land.Move.performed += ctx =>
+        {
+            _speed = maxSpeed;
+            var v2 = ctx.ReadValue<Vector2>();
+            _forwardDirection.x = v2.x;
+            _forwardDirection.z = v2.y;
+            _forwardDirection.Normalize();
+        };
+
+        _playerControls.Land.Move.canceled += _ =>
+        {
+            _forwardDirection = Vector3.zero;
+            _x = 0;
+        };
+    }
+    
+    // Update is called once per frame
+    private void Update()
+    {
+        // regular movement
+        var forwardMovement = _speed * Time.deltaTime;
+        _x += forwardMovement;
+        _accumulatedMovement += _forwardDirection * forwardMovement;
+        
+        // perpendicular offset
+        var offset = amplitude * Mathf.Sin(frequency * _x + phase);
+        var v2 = Vector2.Perpendicular(new Vector2(_forwardDirection.x, _forwardDirection.z));
+        var offsetDirection = new Vector3(v2.x, 0, v2.y).normalized;
+        _accumulatedMovement += offsetDirection * offset;
     }
 
-    private Vector3 GetForwardDirection()
+    private void FixedUpdate()
     {
-        // push the snake forward, use USER INPUT later
-        return Vector3.forward;
-    }
-
-    private Vector3 GetDampDirection()
-    {
-        var vector3 = GetForwardDirection();
-        var vector2 = Vector2.Perpendicular(new Vector2(vector3.x, vector3.z));
-
-        vector3.x = vector2.x;
-        vector3.z = vector2.y;
-
-        return vector3.normalized;
-    }
-
-    private float GetDampOffset()
-    {
-        return Vector3.Dot(head.position, GetDampDirection());
+        var nextPosition = head.position + _accumulatedMovement;
+        _accumulatedMovement = Vector3.zero;
+        
+        head.MovePosition(nextPosition);
     }
 }

@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/PlayerControls.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/PlayerInput/PlayerControls.inputactions'
 
 using System;
 using System.Collections;
@@ -15,7 +15,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Gameplay"",
+            ""name"": ""Land"",
             ""id"": ""513c7528-fe4c-42ea-92a9-2a2c62ffa2ea"",
             ""actions"": [
                 {
@@ -23,14 +23,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""a830579e-a747-4d01-b00a-b24b2b446463"",
                     ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Test"",
-                    ""type"": ""Button"",
-                    ""id"": ""3a9b23c1-cea0-4182-9a93-a244720d4ab5"",
-                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -48,25 +40,68 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""e5575cd1-e40f-4fc9-8ac8-953c77a5d893"",
-                    ""path"": """",
+                    ""name"": ""WASD"",
+                    ""id"": ""5c2bfba1-dd75-401e-b118-417c5380fdbe"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Test"",
-                    ""isComposite"": false,
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""8abcf7db-7d8e-4355-9fdd-483afc4b7f14"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""f560b13d-6e6c-4dc0-abdf-e97625b2d7c1"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""6ef2417d-49e6-456f-8d4a-278e6c645230"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""085af531-e423-4254-8e58-706d90f85a87"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // Gameplay
-        m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
-        m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
-        m_Gameplay_Test = m_Gameplay.FindAction("Test", throwIfNotFound: true);
+        // Land
+        m_Land = asset.FindActionMap("Land", throwIfNotFound: true);
+        m_Land_Move = m_Land.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -113,49 +148,40 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // Gameplay
-    private readonly InputActionMap m_Gameplay;
-    private IGameplayActions m_GameplayActionsCallbackInterface;
-    private readonly InputAction m_Gameplay_Move;
-    private readonly InputAction m_Gameplay_Test;
-    public struct GameplayActions
+    // Land
+    private readonly InputActionMap m_Land;
+    private ILandActions m_LandActionsCallbackInterface;
+    private readonly InputAction m_Land_Move;
+    public struct LandActions
     {
         private @PlayerControls m_Wrapper;
-        public GameplayActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Gameplay_Move;
-        public InputAction @Test => m_Wrapper.m_Gameplay_Test;
-        public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
+        public LandActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Land_Move;
+        public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GameplayActions set) { return set.Get(); }
-        public void SetCallbacks(IGameplayActions instance)
+        public static implicit operator InputActionMap(LandActions set) { return set.Get(); }
+        public void SetCallbacks(ILandActions instance)
         {
-            if (m_Wrapper.m_GameplayActionsCallbackInterface != null)
+            if (m_Wrapper.m_LandActionsCallbackInterface != null)
             {
-                @Move.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
-                @Move.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
-                @Move.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMove;
-                @Test.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTest;
-                @Test.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTest;
-                @Test.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTest;
+                @Move.started -= m_Wrapper.m_LandActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnMove;
             }
-            m_Wrapper.m_GameplayActionsCallbackInterface = instance;
+            m_Wrapper.m_LandActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
-                @Test.started += instance.OnTest;
-                @Test.performed += instance.OnTest;
-                @Test.canceled += instance.OnTest;
             }
         }
     }
-    public GameplayActions @Gameplay => new GameplayActions(this);
-    public interface IGameplayActions
+    public LandActions @Land => new LandActions(this);
+    public interface ILandActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnTest(InputAction.CallbackContext context);
     }
 }
